@@ -6,6 +6,7 @@ import '../providers/budget_provider.dart';
 import '../providers/expense_provider.dart';
 import 'package:intl/intl.dart';
 import '../models/budget.dart';
+import '../main.dart'; // For NotificationsService
 
 class BudgetScreen extends ConsumerStatefulWidget {
   const BudgetScreen({super.key});
@@ -17,6 +18,8 @@ class BudgetScreen extends ConsumerStatefulWidget {
 class _BudgetScreenState extends ConsumerState<BudgetScreen> {
   final _formKey = GlobalKey<FormState>();
   final _budgetController = TextEditingController();
+  bool _isSaving = false;
+  bool _notifiedOverBudget = false;
 
   @override
   void dispose() {
@@ -43,6 +46,24 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
       'card': colorScheme.surface,
       'shadow': isDark ? Colors.black26 : const Color(0x11000000),
     };
+
+    // Overspending notification logic
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final b = budget.asData?.value;
+      if (b != null &&
+          b.monthlyLimit > 0 &&
+          b.currentSpending > b.monthlyLimit) {
+        if (!_notifiedOverBudget) {
+          NotificationsService.showOverspendingAlert(
+            b.currentSpending,
+            b.monthlyLimit,
+          );
+          _notifiedOverBudget = true;
+        }
+      } else {
+        _notifiedOverBudget = false;
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -183,58 +204,40 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                   const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon:
-                          b == null
-                              ? const Icon(Icons.save)
-                              : const Icon(Icons.update),
-                      label: Text(
-                        b == null ? 'Set Budget' : 'Update Budget',
-                        style: textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onPrimary,
+                    child: AnimatedScale(
+                      scale: _isSaving ? 0.96 : 1.0,
+                      duration: const Duration(milliseconds: 100),
+                      child: ElevatedButton.icon(
+                        icon:
+                            b == null
+                                ? const Icon(Icons.save)
+                                : const Icon(Icons.update),
+                        label: Text(
+                          b == null ? 'Set Budget' : 'Update Budget',
+                          style: textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onPrimary,
+                          ),
                         ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
                         ),
-                        elevation: 2,
+                        onPressed:
+                            _isSaving
+                                ? null
+                                : () async {
+                                  setState(() => _isSaving = true);
+                                  await _saveBudget(used, b);
+                                  if (mounted)
+                                    setState(() => _isSaving = false);
+                                },
                       ),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          final newBudget = double.parse(
-                            _budgetController.text.trim(),
-                          );
-                          await ref
-                              .read(budgetProvider.notifier)
-                              .upsertBudget(
-                                b == null
-                                    ? Budget(
-                                      monthlyLimit: newBudget,
-                                      currentSpending: used,
-                                    )
-                                    : Budget(
-                                      id: b.id,
-                                      monthlyLimit: newBudget,
-                                      currentSpending: used,
-                                    ),
-                              );
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  b == null ? 'Budget set!' : 'Budget updated!',
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                          }
-                        }
-                      },
                     ),
                   ),
                 ],
@@ -246,5 +249,30 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveBudget(double used, Budget? b) async {
+    if (_formKey.currentState!.validate()) {
+      final newBudget = double.parse(_budgetController.text.trim());
+      await ref
+          .read(budgetProvider.notifier)
+          .upsertBudget(
+            b == null
+                ? Budget(monthlyLimit: newBudget, currentSpending: used)
+                : Budget(
+                  id: b.id,
+                  monthlyLimit: newBudget,
+                  currentSpending: used,
+                ),
+          );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(b == null ? 'Budget set!' : 'Budget updated!'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
   }
 }

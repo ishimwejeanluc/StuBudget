@@ -21,6 +21,23 @@ class MainNavShell extends ConsumerStatefulWidget {
 class _MainNavShellState extends ConsumerState<MainNavShell> {
   int _selectedIndex = 0;
 
+  void _navigateWithFade(
+    BuildContext context,
+    Widget page, {
+    Function(dynamic)? onResult,
+  }) async {
+    final result = await Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 350),
+      ),
+    );
+    if (onResult != null) onResult(result);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screens = [
@@ -49,12 +66,15 @@ class _MainNavShellState extends ConsumerState<MainNavShell> {
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) async {
           if (index == 1) {
-            final result = await Navigator.of(context).push<int>(
-              MaterialPageRoute(builder: (_) => const AddExpenseScreen()),
+            _navigateWithFade(
+              context,
+              const AddExpenseScreen(),
+              onResult: (result) {
+                if (result != null && result != 1) {
+                  setState(() => _selectedIndex = result);
+                }
+              },
             );
-            if (result != null && result != 1) {
-              setState(() => _selectedIndex = result);
-            }
           } else {
             setState(() => _selectedIndex = index);
           }

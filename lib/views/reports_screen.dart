@@ -294,23 +294,59 @@ class _ReportsBody extends ConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _InfoTile(
-                            icon: '💸',
-                            label: 'Spent',
-                            value: currency.format(spent),
-                            color: Theme.of(context).colorScheme.secondary,
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 500),
+                            builder:
+                                (context, value, child) => Opacity(
+                                  opacity: value,
+                                  child: Transform.translate(
+                                    offset: Offset(0, 20 * (1 - value)),
+                                    child: child,
+                                  ),
+                                ),
+                            child: _InfoTile(
+                              icon: '💸',
+                              label: 'Spent',
+                              value: currency.format(spent),
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
                           ),
-                          _InfoTile(
-                            icon: '✅',
-                            label: 'Saved',
-                            value: currency.format(goalSaved),
-                            color: Theme.of(context).colorScheme.primary,
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 600),
+                            builder:
+                                (context, value, child) => Opacity(
+                                  opacity: value,
+                                  child: Transform.translate(
+                                    offset: Offset(0, 20 * (1 - value)),
+                                    child: child,
+                                  ),
+                                ),
+                            child: _InfoTile(
+                              icon: '✅',
+                              label: 'Saved',
+                              value: currency.format(goalSaved),
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
-                          _InfoTile(
-                            icon: '🔥',
-                            label: 'Best Day',
-                            value: bestDay,
-                            color: Theme.of(context).colorScheme.tertiary,
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 700),
+                            builder:
+                                (context, value, child) => Opacity(
+                                  opacity: value,
+                                  child: Transform.translate(
+                                    offset: Offset(0, 20 * (1 - value)),
+                                    child: child,
+                                  ),
+                                ),
+                            child: _InfoTile(
+                              icon: '🔥',
+                              label: 'Best Day',
+                              value: bestDay,
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
                           ),
                         ],
                       ),

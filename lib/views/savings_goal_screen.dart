@@ -24,6 +24,8 @@ class _SavingGoalScreenState extends ConsumerState<SavingGoalScreen> {
   DateTime? _deadline;
   DateTime? _entryDate;
   bool _initialized = false;
+  bool _isSaving = false;
+  bool _isSavingEntry = false;
 
   @override
   void dispose() {
@@ -60,7 +62,7 @@ class _SavingGoalScreenState extends ConsumerState<SavingGoalScreen> {
     if (picked != null) setState(() => _entryDate = picked);
   }
 
-  void _saveGoal([SavingsGoal? existing]) async {
+  Future<void> _saveGoal([SavingsGoal? existing]) async {
     if (!_goalFormKey.currentState!.validate() || _deadline == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill all goal fields.')),
@@ -90,7 +92,7 @@ class _SavingGoalScreenState extends ConsumerState<SavingGoalScreen> {
     }
   }
 
-  void _addEntry(int goalId) async {
+  Future<void> _addEntry(int goalId) async {
     if (!_entryFormKey.currentState!.validate() || _entryDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill all saving fields.')),
@@ -198,25 +200,37 @@ class _SavingGoalScreenState extends ConsumerState<SavingGoalScreen> {
                     const SizedBox(height: 32),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.save),
-                        label: Text(
-                          'Set Goal',
-                          style: textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onPrimary,
+                      child: AnimatedScale(
+                        scale: _isSaving ? 0.96 : 1.0,
+                        duration: const Duration(milliseconds: 100),
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.save),
+                          label: Text(
+                            'Set Goal',
+                            style: textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onPrimary,
+                            ),
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.primary,
-                          foregroundColor: colorScheme.onPrimary,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colorScheme.primary,
+                            foregroundColor: colorScheme.onPrimary,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
                           ),
-                          elevation: 2,
+                          onPressed:
+                              _isSaving
+                                  ? null
+                                  : () async {
+                                    setState(() => _isSaving = true);
+                                    // ignore: await_only_futures
+                                    await _saveGoal();
+                                    setState(() => _isSaving = false);
+                                  },
                         ),
-                        onPressed: () => _saveGoal(null),
                       ),
                     ),
                   ],
@@ -402,17 +416,28 @@ class _SavingGoalScreenState extends ConsumerState<SavingGoalScreen> {
                       const SizedBox(height: 12),
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => _addEntry(goal.id!),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorScheme.primary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        child: AnimatedScale(
+                          scale: _isSavingEntry ? 0.96 : 1.0,
+                          duration: const Duration(milliseconds: 100),
+                          child: ElevatedButton(
+                            onPressed:
+                                _isSavingEntry
+                                    ? null
+                                    : () async {
+                                      setState(() => _isSavingEntry = true);
+                                      await _addEntry(goal.id!);
+                                      setState(() => _isSavingEntry = false);
+                                    },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
+                            child: const Text('Add Saving'),
                           ),
-                          child: const Text('Add Saving'),
                         ),
                       ),
                     ],

@@ -185,6 +185,7 @@ class HomeScreen extends ConsumerWidget {
                                         ref
                                             .read(themeModeProvider.notifier)
                                             .state = mode;
+                                        Navigator.of(context).pop();
                                       }
                                     },
                                   ),
@@ -291,250 +292,289 @@ class HomeScreen extends ConsumerWidget {
         child: ListView(
           children: [
             // Total Spending Card
-            Container(
-              margin: const EdgeInsets.only(bottom: 18),
-              decoration: BoxDecoration(
-                color: cardBg,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: cardShadow,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: expenses.when(
-                  data:
-                      (list) => Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: primaryColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 600),
+              builder:
+                  (context, value, child) => Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 30 * (1 - value)),
+                      child: child,
+                    ),
+                  ),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 18),
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: cardShadow,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: expenses.when(
+                    data:
+                        (list) => Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: primaryColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.all(12),
+                              child: Icon(
+                                Icons.trending_up,
+                                color: primaryColor,
+                                size: 32,
+                              ),
                             ),
-                            padding: const EdgeInsets.all(12),
-                            child: Icon(
-                              Icons.trending_up,
-                              color: primaryColor,
-                              size: 32,
-                            ),
-                          ),
-                          const SizedBox(width: 18),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Total Spending',
-                                  style: textTheme.bodyMedium?.copyWith(
-                                    color: colorScheme.onSurface.withOpacity(
-                                      0.7,
+                            const SizedBox(width: 18),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Total Spending',
+                                    style: textTheme.bodyMedium?.copyWith(
+                                      color: colorScheme.onSurface.withOpacity(
+                                        0.7,
+                                      ),
                                     ),
                                   ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    currency.format(totalSpending),
+                                    style: textTheme.headlineSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Trend indicator (mock)
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.arrow_upward,
+                                  color: accentOrange,
+                                  size: 20,
                                 ),
-                                const SizedBox(height: 4),
                                 Text(
-                                  currency.format(totalSpending),
-                                  style: textTheme.headlineSmall?.copyWith(
+                                  '2%',
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: accentOrange,
                                     fontWeight: FontWeight.bold,
-                                    color: primaryColor,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          // Trend indicator (mock)
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.arrow_upward,
-                                color: accentOrange,
-                                size: 20,
-                              ),
-                              Text(
-                                '2%',
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: accentOrange,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                  loading:
-                      () => const Center(child: CircularProgressIndicator()),
-                  error:
-                      (e, _) => Text('Error: $e', style: textTheme.bodyMedium),
+                          ],
+                        ),
+                    loading:
+                        () => const Center(child: CircularProgressIndicator()),
+                    error:
+                        (e, _) =>
+                            Text('Error: $e', style: textTheme.bodyMedium),
+                  ),
                 ),
               ),
             ),
             // Budget Card
-            Container(
-              margin: const EdgeInsets.only(bottom: 18),
-              decoration: BoxDecoration(
-                color: cardBg,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: cardShadow,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: budget.when(
-                  data:
-                      (b) =>
-                          b == null
-                              ? const Text(
-                                'No budget set',
-                                style: TextStyle(color: Colors.black54),
-                              )
-                              : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: budgetColor.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        padding: const EdgeInsets.all(12),
-                                        child: Icon(
-                                          Icons.account_balance_wallet,
-                                          color: budgetColor,
-                                          size: 32,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 18),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Budget Remaining',
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              currency.format(budgetRemaining),
-                                              style: TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold,
-                                                color: budgetColor,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        '${(budgetPercent * 100).toStringAsFixed(0)}% used',
-                                        style: TextStyle(
-                                          color: budgetColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  LinearProgressIndicator(
-                                    value: budgetPercent,
-                                    minHeight: 10,
-                                    borderRadius: BorderRadius.circular(8),
-                                    backgroundColor: Colors.grey[200],
-                                    color: budgetColor,
-                                  ),
-                                ],
-                              ),
-                  loading:
-                      () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Text('Error: $e'),
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 700),
+              builder:
+                  (context, value, child) => Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 30 * (1 - value)),
+                      child: child,
+                    ),
+                  ),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 18),
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: cardShadow,
                 ),
-              ),
-            ),
-            // Savings Goal Card
-            Container(
-              margin: const EdgeInsets.only(bottom: 18),
-              decoration: BoxDecoration(
-                color: cardBg,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: cardShadow,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: goals.when(
-                  data:
-                      (list) =>
-                          list.isEmpty
-                              ? const Text(
-                                'No savings goal set',
-                                style: TextStyle(color: Colors.black54),
-                              )
-                              : Row(
-                                children: [
-                                  Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 60,
-                                        height: 60,
-                                        child: CircularProgressIndicator(
-                                          value: savingsProgress,
-                                          strokeWidth: 7,
-                                          backgroundColor: accentPurple
-                                              .withOpacity(0.15),
-                                          color: accentPurple,
-                                        ),
-                                      ),
-                                      Text(
-                                        '${(savingsProgress * 100).toStringAsFixed(0)}%',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: accentPurple,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(width: 18),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: budget.when(
+                    data:
+                        (b) =>
+                            b == null
+                                ? const Text(
+                                  'No budget set',
+                                  style: TextStyle(color: Colors.black54),
+                                )
+                                : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
                                       children: [
-                                        const Text(
-                                          'Savings Goal',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.black54,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          '${currency.format(savingsCurrent)} / ${currency.format(savingsTarget)}',
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: accentPurple,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          'Keep going! 🎯',
-                                          style: TextStyle(
-                                            color: accentPurple.withOpacity(
-                                              0.7,
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: budgetColor.withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
                                             ),
+                                          ),
+                                          padding: const EdgeInsets.all(12),
+                                          child: Icon(
+                                            Icons.account_balance_wallet,
+                                            color: budgetColor,
+                                            size: 32,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 18),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Budget Remaining',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                currency.format(
+                                                  budgetRemaining,
+                                                ),
+                                                style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: budgetColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          '${(budgetPercent * 100).toStringAsFixed(0)}% used',
+                                          style: TextStyle(
+                                            color: budgetColor,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                  loading:
-                      () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Text('Error: $e'),
+                                    const SizedBox(height: 16),
+                                    LinearProgressIndicator(
+                                      value: budgetPercent,
+                                      minHeight: 10,
+                                      borderRadius: BorderRadius.circular(8),
+                                      backgroundColor: Colors.grey[200],
+                                      color: budgetColor,
+                                    ),
+                                  ],
+                                ),
+                    loading:
+                        () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Text('Error: $e'),
+                  ),
+                ),
+              ),
+            ),
+            // Savings Goal Card
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 800),
+              builder:
+                  (context, value, child) => Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 30 * (1 - value)),
+                      child: child,
+                    ),
+                  ),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 18),
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: cardShadow,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: goals.when(
+                    data:
+                        (list) =>
+                            list.isEmpty
+                                ? const Text(
+                                  'No savings goal set',
+                                  style: TextStyle(color: Colors.black54),
+                                )
+                                : Row(
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 60,
+                                          height: 60,
+                                          child: CircularProgressIndicator(
+                                            value: savingsProgress,
+                                            strokeWidth: 7,
+                                            backgroundColor: accentPurple
+                                                .withOpacity(0.15),
+                                            color: accentPurple,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${(savingsProgress * 100).toStringAsFixed(0)}%',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: accentPurple,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Savings Goal',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '${currency.format(savingsCurrent)} / ${currency.format(savingsTarget)}',
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: accentPurple,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            'Keep going! 🎯',
+                                            style: TextStyle(
+                                              color: accentPurple.withOpacity(
+                                                0.7,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                    loading:
+                        () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Text('Error: $e'),
+                  ),
                 ),
               ),
             ),

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, unused_local_variable, curly_braces_in_flow_control_structures, duplicate_ignore, use_build_context_synchronously
+// ignore_for_file: deprecated_member_use, unused_local_variable, curly_braces_in_flow_control_structures, duplicate_ignore, use_build_context_synchronously, await_only_futures
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +21,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   final _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   int? _selectedCategoryId;
+  bool _isSaving = false;
 
   @override
   void dispose() {
@@ -42,9 +43,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
     }
   }
 
-  void _saveExpense() async {
+  Future<void> _saveExpense() async {
     if (!_formKey.currentState!.validate() || _selectedCategoryId == null)
-      // ignore: curly_braces_in_flow_control_structures
       return;
     final categories = ref
         .read(categoryProvider)
@@ -255,22 +255,35 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                     const SizedBox(height: 32),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.save),
-                        label: const Text(
-                          'Save Expense',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2563EB),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      child: AnimatedScale(
+                        scale: _isSaving ? 0.96 : 1.0,
+                        duration: const Duration(milliseconds: 100),
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.save),
+                          label: const Text(
+                            'Save Expense',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          elevation: 2,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                          ),
+                          onPressed:
+                              _isSaving
+                                  ? null
+                                  : () async {
+                                    setState(() => _isSaving = true);
+                                    await _saveExpense();
+                                    if (mounted)
+                                      setState(() => _isSaving = false);
+                                  },
                         ),
-                        onPressed: _saveExpense,
                       ),
                     ),
                   ],
@@ -292,7 +305,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
         height: 70,
         backgroundColor:
             Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-        indicatorColor: Colors.transparent,
+        indicatorColor: colorScheme.primary.withOpacity(0.1),
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.dashboard_outlined),
@@ -301,22 +314,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           ),
           NavigationDestination(
             icon: const Icon(Icons.add_circle_outline),
-            selectedIcon: Container(
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                border: Border.all(color: colorScheme.primary, width: 2),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: colorScheme.primary.withOpacity(0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(2),
-              child: Icon(Icons.add_circle, color: colorScheme.primary),
-            ),
+            selectedIcon: Icon(Icons.add_circle, color: colorScheme.primary),
             label: 'Add',
           ),
           NavigationDestination(

@@ -67,3 +67,4 @@ class BudgetService {
     await db.delete('savings_goals');
   }
 }
+ 
