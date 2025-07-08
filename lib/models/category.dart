@@ -3,22 +3,28 @@ import 'package:flutter/material.dart';
 class Category {
   final int? id;
   final String name;
-  final IconData icon;
-  final Color color;
+  final int iconCodePoint;
+  final String iconFontFamily;
+  final int colorValue;
 
   Category({
     this.id,
     required this.name,
-    required this.icon,
-    required this.color,
+    required this.iconCodePoint,
+    required this.iconFontFamily,
+    required this.colorValue,
   });
+
+  IconData get icon => IconData(iconCodePoint, fontFamily: iconFontFamily);
+  Color get color => Color(colorValue);
 
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(
       id: map['id'] as int?,
       name: map['name'] as String,
-      icon: IconData(map['icon'] as int, fontFamily: 'MaterialIcons'),
-      color: Color(map['color'] as int),
+      iconCodePoint: map['icon'] as int,
+      iconFontFamily: map['iconFontFamily'] as String,
+      colorValue: map['color'] as int,
     );
   }
 
@@ -26,9 +32,9 @@ class Category {
     return {
       'id': id,
       'name': name,
-      'icon': icon.codePoint,
-      // ignore: deprecated_member_use
-      'color': color.value,
+      'icon': iconCodePoint,
+      'iconFontFamily': iconFontFamily,
+      'color': colorValue,
     };
   }
 }

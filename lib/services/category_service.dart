@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:sqflite/sqflite.dart';
 import '../models/category.dart';
 import 'database_service.dart';
@@ -41,26 +43,54 @@ class CategoryService {
     );
     if (count == 0) {
       final defaultCategories = [
-        Category(name: 'Food', icon: Icons.fastfood, color: Colors.orange),
+        Category(
+          name: 'Food',
+          iconCodePoint: Icons.fastfood.codePoint,
+          iconFontFamily: Icons.fastfood.fontFamily!,
+          colorValue: Colors.orange.value,
+        ),
         Category(
           name: 'Transport',
-          icon: Icons.directions_bus,
-          color: const Color(0xFF4F90FF),
+          iconCodePoint: Icons.directions_bus.codePoint,
+          iconFontFamily: Icons.directions_bus.fontFamily!,
+          colorValue: const Color(0xFF4F90FF).value,
         ),
         Category(
           name: 'Shopping',
-          icon: Icons.shopping_bag,
-          color: Colors.purple,
+          iconCodePoint: Icons.shopping_bag.codePoint,
+          iconFontFamily: Icons.shopping_bag.fontFamily!,
+          colorValue: Colors.purple.value,
         ),
-        Category(name: 'Bills', icon: Icons.receipt_long, color: Colors.red),
-        Category(name: 'Entertainment', icon: Icons.movie, color: Colors.green),
+        Category(
+          name: 'Bills',
+          iconCodePoint: Icons.receipt_long.codePoint,
+          iconFontFamily: Icons.receipt_long.fontFamily!,
+          colorValue: Colors.red.value,
+        ),
+        Category(
+          name: 'Entertainment',
+          iconCodePoint: Icons.movie.codePoint,
+          iconFontFamily: Icons.movie.fontFamily!,
+          colorValue: Colors.green.value,
+        ),
         Category(
           name: 'Health',
-          icon: Icons.health_and_safety,
-          color: Colors.teal,
+          iconCodePoint: Icons.health_and_safety.codePoint,
+          iconFontFamily: Icons.health_and_safety.fontFamily!,
+          colorValue: Colors.teal.value,
         ),
-        Category(name: 'Education', icon: Icons.school, color: Colors.indigo),
-        Category(name: 'Other', icon: Icons.category, color: Colors.grey),
+        Category(
+          name: 'Education',
+          iconCodePoint: Icons.school.codePoint,
+          iconFontFamily: Icons.school.fontFamily!,
+          colorValue: Colors.indigo.value,
+        ),
+        Category(
+          name: 'Other',
+          iconCodePoint: Icons.category.codePoint,
+          iconFontFamily: Icons.category.fontFamily!,
+          colorValue: Colors.grey.value,
+        ),
       ];
       for (final cat in defaultCategories) {
         await db.insert('categories', cat.toMap());

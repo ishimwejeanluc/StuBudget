@@ -38,6 +38,7 @@ class DatabaseService {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         icon INTEGER NOT NULL,
+        iconFontFamily TEXT NOT NULL,
         color INTEGER NOT NULL
       )
     ''');
