@@ -44,7 +44,7 @@ A modern, student-focused budgeting app built with Flutter.
 
 You can download and install the latest APKs directly:
 
-- [Download Release APK](build/app/outputs/flutter-apk/app-release.apk)
+- [Download Release APK](Stubudgetapk/app-release.apk)
 
 ## 👩‍💻 Developer Notes
 - **State Management:** Uses Riverpod for robust, scalable state management.
