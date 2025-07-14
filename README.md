@@ -27,7 +27,7 @@ A modern, student-focused budgeting app built with Flutter.
 ## 🛠️ Setup Instructions
 1. **Clone the repo:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/ishimwejeanluc/StuBudget.git
    cd studentBudgetv1
    ```
 2. **Install dependencies:**
