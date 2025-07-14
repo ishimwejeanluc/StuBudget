@@ -16,12 +16,12 @@ A modern, student-focused budgeting app built with Flutter.
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.16.jpeg" alt="screenshot1" width="200"/>
-  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.17.jpeg" alt="screenshot2" width="200"/>
-  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.20.jpeg" alt="screenshot3" width="200"/>
-  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.20%20(1).jpeg" alt="screenshot4" width="200"/>
-  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.21.jpeg" alt="screenshot5" width="200"/>
-  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.21%20(1).jpeg" alt="screenshot6" width="200"/>
+  <img src="screenshots/WhatsApp%20Image%202025-07-14%20at%2020.46.16.jpeg" alt="screenshot1" width="200"/>
+  <img src="screenshots/WhatsApp%20Image%202025-07-14%20at%2020.46.17.jpeg" alt="screenshot2" width="200"/>
+  <img src="screenshots/WhatsApp%20Image%202025-07-14%20at%2020.46.20.jpeg" alt="screenshot3" width="200"/>
+  <img src="screenshots/WhatsApp%20Image%202025-07-14%20at%2020.46.20%20(1).jpeg" alt="screenshot4" width="200"/>
+  <img src="screenshots/WhatsApp%20Image%202025-07-14%20at%2020.46.21.jpeg" alt="screenshot5" width="200"/>
+  <img src="screenshots/WhatsApp%20Image%202025-07-14%20at%2020.46.21%20(1).jpeg" alt="screenshot6" width="200"/>
 </p>
 
 ## 🛠️ Setup Instructions
