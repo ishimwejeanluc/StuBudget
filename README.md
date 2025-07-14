@@ -28,7 +28,7 @@ A modern, student-focused budgeting app built with Flutter.
 1. **Clone the repo:**
    ```bash
    git clone https://github.com/ishimwejeanluc/StuBudget.git
-   cd studentBudgetv1
+   cd StuBudget
    ```
 2. **Install dependencies:**
    ```bash
@@ -46,15 +46,5 @@ You can download and install the latest APKs directly:
 
 - [Download Release APK](Stubudgetapk/app-release.apk)
 
-## 👩‍💻 Developer Notes
-- **State Management:** Uses Riverpod for robust, scalable state management.
-- **Theming:** All colors and styles are theme-driven for consistency and easy customization.
-- **Notifications:** Uses `flutter_local_notifications` for local alerts.
-- **Animations:** Cards, tiles, and transitions use Flutter's animation widgets for a lively UX.
-- **Accessibility:** All main actions and data are accessible to screen readers.
-- **Mock Data:** On first launch, demo data is inserted if the database is empty.
-- **Code Quality:** Linter warnings are resolved, and code is organized for maintainability.
-
----
 
 **Enjoy budgeting smarter with StuBudget!**
