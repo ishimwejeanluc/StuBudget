@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../models/expense.dart';
 import '../providers/expense_provider.dart';
 import '../providers/category_provider.dart';
+import '../providers/budget_provider.dart';
 
 class AddExpenseScreen extends ConsumerStatefulWidget {
   const AddExpenseScreen({super.key});
@@ -44,6 +45,23 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   }
 
   Future<void> _saveExpense() async {
+    // Check if budget is set
+    final budgetAsync = ref.read(budgetProvider);
+    final budget = budgetAsync.asData?.value;
+    if (budget == null || budget.monthlyLimit <= 0) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Please set your monthly budget before adding expenses.',
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      return;
+    }
+
     if (!_formKey.currentState!.validate() || _selectedCategoryId == null)
       return;
     final categories = ref

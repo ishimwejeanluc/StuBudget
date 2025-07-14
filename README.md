@@ -13,6 +13,17 @@ A modern, student-focused budgeting app built with Flutter.
 - **Accessible & Polished**: Designed for accessibility, with semantic labels and strong color contrast.
 - **Demo Data**: App includes mock data for easy demo and testing.
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.16.jpeg" alt="screenshot1" width="200"/>
+  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.17.jpeg" alt="screenshot2" width="200"/>
+  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.20.jpeg" alt="screenshot3" width="200"/>
+  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.20%20(1).jpeg" alt="screenshot4" width="200"/>
+  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.21.jpeg" alt="screenshot5" width="200"/>
+  <img src="screenshoots/WhatsApp%20Image%202025-07-14%20at%2020.46.21%20(1).jpeg" alt="screenshot6" width="200"/>
+</p>
+
 ## 🛠️ Setup Instructions
 1. **Clone the repo:**
    ```bash
@@ -28,6 +39,12 @@ A modern, student-focused budgeting app built with Flutter.
    flutter run
    ```
    (You can run on iOS, Android, or web.)
+
+## 📦 Download APK
+
+You can download and install the latest APKs directly:
+
+- [Download Release APK](build/app/outputs/flutter-apk/app-release.apk)
 
 ## 👩‍💻 Developer Notes
 - **State Management:** Uses Riverpod for robust, scalable state management.

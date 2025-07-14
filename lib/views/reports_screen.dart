@@ -517,8 +517,50 @@ class SavingRateChart extends StatelessWidget {
         gridData: FlGridData(show: true),
         borderData: FlBorderData(show: true),
         titlesData: FlTitlesData(
-          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
-          bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 36,
+              interval: 2000, // Show every 2K, adjust as needed
+              getTitlesWidget: (value, meta) {
+                if (value == 0)
+                  // ignore: curly_braces_in_flow_control_structures
+                  return const Text('0', style: TextStyle(fontSize: 10));
+                if (value % 2000 == 0) {
+                  return Text(
+                    '${(value ~/ 1000)}K',
+                    style: const TextStyle(fontSize: 10),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 24,
+              interval:
+                  (savingsOverTime.length / 5)
+                      .ceilToDouble(), // Show 5 labels max
+              getTitlesWidget: (value, meta) {
+                if (value == 1 || value == savingsOverTime.length) {
+                  return Text(
+                    value.toInt().toString(),
+                    style: const TextStyle(fontSize: 10),
+                  );
+                }
+                if (value % ((savingsOverTime.length / 5).ceilToDouble()) ==
+                    0) {
+                  return Text(
+                    value.toInt().toString(),
+                    style: const TextStyle(fontSize: 10),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
         ),
         lineBarsData: [
           LineChartBarData(
@@ -566,10 +608,31 @@ class TopCategoriesChart extends StatelessWidget {
           );
         }),
         titlesData: FlTitlesData(
-          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 40,
+              interval: 10000, // Show every 10K, adjust as needed
+              getTitlesWidget: (value, meta) {
+                if (value == 0)
+                  // ignore: curly_braces_in_flow_control_structures
+                  return const Text('0', style: TextStyle(fontSize: 10));
+                if (value % 10000 == 0) {
+                  return Text(
+                    '${(value ~/ 1000)}K',
+                    style: const TextStyle(fontSize: 10),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
+              reservedSize: 24,
+              interval:
+                  (categories.length / 5).ceilToDouble(), // Show 5 labels max
               getTitlesWidget: (value, meta) {
                 final i = value.toInt();
                 if (i < 0 || i >= categories.length) return Container();
